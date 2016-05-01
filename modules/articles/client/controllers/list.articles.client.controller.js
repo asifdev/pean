@@ -56,7 +56,7 @@
         $scope.clear = function(form) {
           console.log('* list.srticles.client.controller - clear *' + form);
 
-          if (form === 'item') {
+          if (form === 'article') {
             // $scope.editing = false;
             // $scope.submitted = false;
             $scope.item = {};
@@ -292,14 +292,27 @@
           if ($scope.itemForm.$valid) {
             if ($scope.editing) {
               $scope.update($scope.item.id);
-               $scope.list();
+              $scope.list();
               // $scope.clear('item');
             } else {
               // $scope.currentPage = 1;
               $scope.create();
-               $scope.list();
+              $scope.list();
               // $scope.clear('item');
             }
+          }
+        };
+        /**
+         * Init
+         * [init description]
+         * @return {[type]} [description]
+         */
+        $scope.init = function() {
+          console.log('* article.client.controller - init *');
+          if ($scope.authenticated) {
+            // $scope.read();
+            $scope.list();
+            $scope.pane = 'article';
           }
         };
       }

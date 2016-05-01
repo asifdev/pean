@@ -1,4 +1,6 @@
-<div data-ng-controller="ArticlesListController">
+<div
+    data-ng-controller="ArticlesListController"
+    data-ng-init="init()">
   <!-- <section> -->
     <div class="page-header">
       <h1>Articles</h1>
@@ -8,13 +10,13 @@
       <div class="col-md-12">
         <ul class="nav nav-tabs">
           <li 
-            data-ng-class="pane === 'create' ? 'active' : ''" 
-            data-ng-click="tab('create')"
-          ><a href="#"><i class="fa fa-plus fa-fw"></i> Create</a></li>
+            data-ng-class="pane === 'article' ? 'active' : ''" 
+            data-ng-click="tab('article')"
+          ><a href="#"><i class="fa fa-plus fa-fw"></i> Article</a></li>
           <li 
             data-ng-class="pane === 'search' ? 'active' : ''" 
             data-ng-click="tab('search')"
-          ><a href="#"><i class="fa fa-search fa-fw"></i> List</a></li>
+          ><a href="#"><i class="fa fa-search fa-fw"></i> Search</a></li>
         </ul>
       </div>
     </div>
@@ -28,7 +30,98 @@
     >
       <!-- ui-sref="articles.view({ articleId: article.id })" -->
       <fieldset>
-        <div class="row">
+        
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="search">Search:</label>
+                  <input
+                    data-ng-model="search.general"
+                    class="form-control"
+                    id="search"
+                    type="text"
+                  >
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label for="start-date">Start Date:</label>
+                <div class="dropdown">
+                  <a 
+                    data-toggle="dropdown" 
+                    data-target="#" 
+                    class="dropdown-toggle" 
+                    href="#"
+                    id="start-date-dropdown"
+                  >
+                    <div class="input-group">
+                      <input
+                        data-ng-model="search.startDate"
+                        class="form-control"
+                        type="text"
+                        readonly
+                      >
+                      <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <datetimepicker
+                      data-ng-model="search.startDate"
+                      data-datetimepicker-config="{ dropdownSelector: '#start-date-dropdown' }"
+                      id="start-date"
+                    />
+                  </ul>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label for="end-date">End Date:</label>
+                <div class="dropdown">
+                  <a 
+                    data-toggle="dropdown" 
+                    data-target="#" 
+                    class="dropdown-toggle" 
+                    href="#"
+                    id="end-date-dropdown"
+                  >
+                    <div class="input-group">
+                      <input
+                        data-ng-model="search.endDate"
+                        class="form-control"
+                        type="text"
+                        readonly
+                      >
+                      <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <datetimepicker
+                      data-ng-model="search.endDate"
+                      data-datetimepicker-config="{ dropdownSelector: '#end-date-dropdown' }"
+                      id="end-date"
+                    />
+                  </ul>
+              </div>
+            </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button
+                    class="btn btn-default"
+                    type="submit"
+                  >
+                    <i class="fa fa-search fa-fw"></i> Find
+                  </button>
+                  <button
+                    data-ng-click="clear('search')"
+                    class="btn btn-default"
+                    type="button"
+                  >
+                    <i class="fa fa-times fa-fw"></i> Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+          <div class="row">
           <div class="col-md-12">
             <div class="list-group">
             <a ng-repeat="article in articles" class="list-group-item">
@@ -95,7 +188,7 @@
     </form>
     <!-- Search -->
     <form 
-      data-ng-show="pane === 'create'"
+      data-ng-show="pane === 'article'"
       data-ng-submit="submit()"
       class="searchForm" 
       name="searchForm" 
