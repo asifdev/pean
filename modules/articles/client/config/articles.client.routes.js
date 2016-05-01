@@ -47,7 +47,7 @@
       .state('articles.view', {
         url: '/:articleId',
         templateUrl: 'modules/articles/client/views/view-article.client.view.html',
-        controller: 'ArticlesController',
+        controller: 'ArticlesListController',
         controllerAs: 'vm',
         resolve: {
           articleResolve: getArticle

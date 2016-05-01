@@ -116,10 +116,55 @@ exports.read = function(req, res) {
 /**
  * Update a article
  */
-exports.update = function(req, res) {
-  // console.log('* articles.server.controller - update *');
+// exports.update = function(req, res) {
+//   // console.log('* articles.server.controller - update *');
 
-  var id = req.params.articleId;
+//   var id = req.params.articleId;
+
+//   db.Article
+//     .findOne({
+//       where: {
+//         id: id
+//       },
+//       include: [
+//         db.User
+//       ]
+//     })
+//     .then(function(article) {
+//       article.updateAttributes({
+//         title: req.body.title,
+//         content: req.body.content
+//       })
+//       .then(function() {
+//         return res.json(article);
+//       })
+//       .catch(function(err) {
+//         return res.status(400).send({
+//           message: errorHandler.getErrorMessage(err)
+//         });
+//       });
+
+//       return null;
+//     })
+//     .catch(function(err) {
+//       return res.status(400).send({
+//         message: errorHandler.getErrorMessage(err)
+//       });
+//     });
+// };
+/**
+ * Update
+ * [update description]
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
+exports.update = function(req, res) {
+  console.log('* general.server.controller - update *');
+
+  var data = req.body,
+    // id = req.params.id;
+    id = req.body.id;
 
   db.Article
     .findOne({

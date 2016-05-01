@@ -1,21 +1,215 @@
-<section>
-  <div class="page-header">
-    <h1>Articles</h1>
-  </div>
-  <div class="list-group">
-    <a ng-repeat="article in vm.articles" ui-sref="articles.view({ articleId: article.id })" class="list-group-item">
-      <small class="list-group-item-text">
-        Posted on
-        <span ng-bind="article.createdAt | date:'mediumDate'"></span>
-        by
-        <span ng-if="article.User" ng-bind="article.User.displayName"></span>
-        <span ng-if="!article.User">Deleted User</span>
-      </small>
-      <h4 class="list-group-item-heading" ng-bind="article.title"></h4>
-      <p class="list-group-item-text" ng-bind="article.content"></p>
-    </a>
-  </div>
-  <div class="alert alert-warning text-center" ng-if="vm.articles.$resolved && !vm.articles.length">
-    No articles yet, why don't you <a ui-sref="articles.create">create one</a>?
-  </div>
-</section>
+<div data-ng-controller="ArticlesListController">
+  <!-- <section> -->
+    <div class="page-header">
+      <h1>Articles</h1>
+    </div>
+    <!-- Tabs -->
+    <div class="row">
+      <div class="col-md-12">
+        <ul class="nav nav-tabs">
+          <li 
+            data-ng-class="pane === 'create' ? 'active' : ''" 
+            data-ng-click="tab('create')"
+          ><a href="#"><i class="fa fa-plus fa-fw"></i> Create</a></li>
+          <li 
+            data-ng-class="pane === 'search' ? 'active' : ''" 
+            data-ng-click="tab('search')"
+          ><a href="#"><i class="fa fa-search fa-fw"></i> List</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- Item -->
+    <form 
+      data-ng-show="pane === 'search'"
+      data-ng-submit="submit()"
+      class="itemForm" 
+      name="itemForm" 
+      novalidate
+    >
+      <!-- ui-sref="articles.view({ articleId: article.id })" -->
+      <fieldset>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="list-group">
+            <a ng-repeat="article in articles" class="list-group-item">
+              <small class="list-group-item-text">
+                Posted on
+                <span ng-bind="article.createdAt | date:'mediumDate'"></span>
+                by
+                <span ng-if="article.User" ng-bind="article.User.displayName"></span>
+                <span ng-if="!article.User">Deleted User</span>
+              </small>
+              <h4 class="list-group-item-heading" ng-bind="article.title"></h4>
+              <p class="list-group-item-text" ng-bind="article.content"></p>
+              <div class="group-button">
+                  <button
+                      data-ng-click="edit(article.id)"
+                      class="btn btn-default"
+                      >
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <button
+                      data-ng-click="delete(article.id)"
+                      oc-message="Are you sure you want to remove item <strong>{{article.id}}</strong> from general?"
+                      class="btn btn-default article-delete"
+                      >
+                    <i class="fa fa-trash-o"></i>
+                  </button>
+                </div>
+            </a>
+          </div>
+          <div class="alert alert-warning text-center" ng-if="articles.$resolved && !articles.length">
+            No articles yet, why don't you <a ui-sref="articles.create">create one</a>?
+          </div>
+        </div>
+        </div>
+        <!-- </div> -->
+       <!--  <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <button
+                data-ng-hide="editing"
+                class="btn btn-default"
+                type="submit"
+              >
+                <i class="fa fa-plus fa-fw"></i> Add
+              </button>
+              <button
+                data-ng-show="editing"
+                class="btn btn-default"
+                type="submit"
+              >
+                <i class="fa fa-pencil fa-fw"></i> Update
+              </button>
+              <button
+                data-ng-click="clear('item')"
+                class="btn btn-default"
+                type="button"
+              >
+                <i class="fa fa-times fa-fw"></i> Clear
+              </button>
+            </div>
+          </div>
+        </div> -->
+      </fieldset>
+    </form>
+    <!-- Search -->
+    <form 
+      data-ng-show="pane === 'create'"
+      data-ng-submit="submit()"
+      class="searchForm" 
+      name="searchForm" 
+      novalidate
+    >
+      <fieldset>
+        <div class="col-md-12" id="new-content">
+          <!-- <section> -->
+            <div class="page-header">
+              <h1 data-ng-hide="editing">{{vm.article.id ? 'Edit Article' : 'New Article'}}</h1>
+              <h1 data-ng-show="editing">Update Article</h1>
+            </div>
+            <div class="col-md-12">
+              <form name="vm.form.articleForm" class="form-horizontal" ng-submit="vm.save(vm.form.articleForm.$valid)" novalidate>
+                <fieldset>
+                  <div class="form-group" show-errors>
+                    <label class="control-label" for="title">Title</label>
+                    <input name="title" type="text" id="title" class="form-control" data-ng-model="item.title" placeholder="Title" required>
+                    <div 
+                    ng-if="searchForm.title.$dirty || submitted"
+                    ng-messages="searchForm.title.$error"
+                  >
+                    <div ng-message="required">This field is required.</div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label" for="content">Content</label>
+                    <textarea name="content" data-ng-model="item.content" id="content" class="form-control" cols="30" rows="10" placeholder="Content"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <button data-ng-hide="editing"
+                    type="submit"
+                    class="btn btn-default">{{vm.article.id ? 'Update' : 'Create'}}
+                    </button>
+                    <button
+                    data-ng-show="editing"
+                    class="btn btn-default"
+                    type="submit"
+                  >
+                    <i class="fa fa-pencil fa-fw"></i> Update
+                  </button>
+                  <button
+                    data-ng-click="clear('search')"
+                    class="btn btn-default"
+                    type="button"
+                  >
+                    <i class="fa fa-times fa-fw"></i> Clear
+                  </button>
+                  </div>
+                  <div ng-show="vm.error" class="text-danger">
+                    <strong ng-bind="vm.error"></strong>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+          <!-- </section> -->
+
+          <div class="row">
+          <div class="col-md-12">
+            <div class="list-group">
+            <a ng-repeat="article in articles" class="list-group-item">
+              <small class="list-group-item-text">
+                Posted on
+                <span ng-bind="article.createdAt | date:'mediumDate'"></span>
+                by
+                <span ng-if="article.User" ng-bind="article.User.displayName"></span>
+                <span ng-if="!article.User">Deleted User</span>
+              </small>
+              <h4 class="list-group-item-heading" ng-bind="article.title"></h4>
+              <p class="list-group-item-text" ng-bind="article.content"></p>
+              <div class="group-button">
+                  <button
+                      data-ng-click="edit(article.id)"
+                      class="btn btn-default"
+                      >
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <button
+                      data-ng-click="delete(article.id)"
+                      oc-message="Are you sure you want to remove item <strong>{{article.id}}</strong> from general?"
+                      class="btn btn-default article-delete"
+                      >
+                    <i class="fa fa-trash-o"></i>
+                  </button>
+                </div>
+            </a>
+          </div>
+          <div class="alert alert-warning text-center" ng-if="articles.$resolved && !articles.length">
+            <!-- No articles yet, why don't you <a ui-sref="articles.create">create one</a>? -->
+          No articles yet, why don't you create one??
+          </div>
+        </div>
+        </div>
+        </div>
+        <!-- <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <button
+                class="btn btn-default"
+                type="submit"
+              >
+                <i class="fa fa-search fa-fw"></i> Find
+              </button>
+              <button
+                data-ng-click="clear('search')"
+                class="btn btn-default"
+                type="button"
+              >
+                <i class="fa fa-times fa-fw"></i> Clear
+              </button>
+            </div>
+          </div>
+        </div> -->
+      </fieldset> 
+    </form>
+    
+  <!-- </section> -->
+</div>
