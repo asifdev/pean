@@ -41,10 +41,10 @@
 
           // $scope.read();
 
-          // if (tab === 'create') {
-          //   $scope.search = {};
-          //   $scope.searchForm.$setPristine();
-          // }
+          if (tab === 'create') {
+            $scope.search = {};
+            $scope.searchForm.$setPristine();
+          }
         };
 
         /**
@@ -80,36 +80,36 @@
         // vm.save = save;
 
         // Remove existing Article
-        $scope.remove = function() {
-          if (confirm('Are you sure you want to delete?')) {
-            vm.article.$remove($state.go('articles.list'));
-          }
-        };
+        // $scope.remove = function() {
+        //   if (confirm('Are you sure you want to delete?')) {
+        //     vm.article.$remove($state.go('articles.list'));
+        //   }
+        // };
 
         // Save Article
-        $scope.save = function (isValid) {
-          if (!isValid) {
-            $scope.$broadcast('show-errors-check-validity', 'vm.form.articleForm');
-            return false;
-          }
+        // $scope.save = function (isValid) {
+        //   if (!isValid) {
+        //     $scope.$broadcast('show-errors-check-validity', 'vm.form.articleForm');
+        //     return false;
+        //   }
 
-          // TODO: move create/update logic to service
-          if (vm.article.id) {
-            vm.article.$update(successCallback, errorCallback);
-          } else {
-            vm.article.$save(successCallback, errorCallback);
-          }
+        //   // TODO: move create/update logic to service
+        //   if (vm.article.id) {
+        //     vm.article.$update(successCallback, errorCallback);
+        //   } else {
+        //     vm.article.$save(successCallback, errorCallback);
+        //   }
 
-          function successCallback(res) {
-            $state.go('articles.view', {
-              articleId: res.id
-            });
-          }
+        //   function successCallback(res) {
+        //     $state.go('articles.view', {
+        //       articleId: res.id
+        //     });
+        //   }
 
-          function errorCallback(res) {
-            vm.error = res.data.message;
-          }
-        };
+        //   function errorCallback(res) {
+        //     vm.error = res.data.message;
+        //   }
+        // };
 
         /**
          * Read
@@ -291,40 +291,56 @@
          * @param  {[type]} id [description]
          * @return {[type]}    [description]
          */
+        // $scope.edit = function(id) {
+        //   console.log('* general.client.controller - edit *');
+
+        //   $scope.editing = true;
+
+        //   var params = {
+        //     id: id
+        //   };
+
+        //   $http({
+        //     url: 'api/Articles/' + id,
+        //     method: 'GET',
+        //     // data: data
+        //   })
+        //   .then(function(result) {
+        //     if (result) {
+        //       $scope.editing = true;
+        //       $scope.general = result.data;
+        //       console.log($scope.general);
+        //       $scope.item.title = $scope.general.title;
+        //       $scope.item.content = $scope.general.content;
+        //       $scope.item.id = $scope.general.id;
+        //       // $scope.item = {};
+        //       // $scope.editing = false;
+        //       // $scope.articleForm.$setPristine();
+        //       // $scope.read();
+        //     }
+        //   }, function(err) {
+        //     $scope.error = err.data.message;
+        //   });
+
+        // // _.each($scope.general[id], function(value, key) {
+        // //   $scope.item[key] = value;
+        // // });
+        // };
+
+        /**
+         * Edit
+         * [edit description]
+         * @param  {[type]} id [description]
+         * @return {[type]}    [description]
+         */
         $scope.edit = function(id) {
           console.log('* general.client.controller - edit *');
 
           $scope.editing = true;
 
-          var params = {
-            id: id
-          };
-
-          $http({
-            url: 'api/Articles/' + id,
-            method: 'GET',
-            // data: data
-          })
-          .then(function(result) {
-            if (result) {
-              $scope.editing = true;
-              $scope.general = result.data;
-              console.log($scope.general);
-              $scope.item.title = $scope.general.title;
-              $scope.item.content = $scope.general.content;
-              $scope.item.id = $scope.general.id;
-              // $scope.item = {};
-              // $scope.editing = false;
-              // $scope.articleForm.$setPristine();
-              // $scope.read();
-            }
-          }, function(err) {
-            $scope.error = err.data.message;
+          _.each($scope.articles[id - 1], function(value, key) {
+            $scope.item[key] = value;
           });
-
-        // _.each($scope.general[id], function(value, key) {
-        //   $scope.item[key] = value;
-        // });
         };
 
         $scope.backLinkClick = function () {

@@ -22,7 +22,7 @@
 
 angular.module('articles').factory('ArticlesService', ['$resource',
   function($resource) {
-    return $resource('api/articles/:articleId', {
+    return $resource('api/Articles/:id', {
       id: '@id'
     }, {
       update: {
