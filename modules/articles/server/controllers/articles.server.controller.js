@@ -8,6 +8,59 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
+ * Query builder
+ * [queryBuilder description]
+ * @param  {[type]} req [description]
+ * @return {[type]}     [description]
+ */
+var queryBuilder = function(req) {
+  console.log('* general.server.controller - queryBuilder *');
+
+  var search = JSON.parse(req.query.search);
+
+  var queries = [],
+    andConditions = [],
+    orConditions = [];
+
+  if (search.article) {
+    orConditions.push({
+      'title': {
+        $like: '%' + search.article + '%'
+      }
+    }, {
+      'content': {
+        $like: '%' + search.article + '%'
+      }
+    });
+  }
+
+  if (search.startDate) {
+    andConditions.push({
+      'createdAt': {
+        $gt: search.startDate
+      }
+    });
+  }
+
+  if (search.endDate) {
+    andConditions.push({
+      'createdAt': {
+        $lt: search.endDate
+      }
+    });
+  }
+
+  queries.push({
+    $and: andConditions
+  });
+  queries.push({
+    $or: orConditions
+  });
+
+  return queries;
+};
+
+/**
  * Create a article
  */
 exports.create = function(req, res) {
@@ -90,27 +143,61 @@ exports.list = function(req, res) {
 /**
  * Show the current article
  */
+// exports.read = function(req, res) {
+//   // console.log('* articles.server.controller - read *');
+
+//   var id = req.params.articleId;
+
+//   db.Article.find({
+//     where: {
+//       id: id
+//     },
+//     include: [
+//       db.User
+//     ]
+//   })
+//   .then(function(article) {
+//     return res.json(article);
+//   })
+//   .catch(function(err) {
+//     return res.status(400).send({
+//       message: errorHandler.getErrorMessage(err)
+//     });
+//   });
+// };
+
+/**
+ * Read
+ * [read description]
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
 exports.read = function(req, res) {
-  // console.log('* articles.server.controller - read *');
+  console.log('* article.server.controller - read *');
 
-  var id = req.params.articleId;
+  // var limit = req.query.limit,
+  //   offset = req.query.offset,
+  //   order = req.query.order;
 
-  db.Article.find({
-    where: {
-      id: id
-    },
-    include: [
-      db.User
-    ]
-  })
-  .then(function(article) {
-    return res.json(article);
-  })
-  .catch(function(err) {
-    return res.status(400).send({
-      message: errorHandler.getErrorMessage(err)
+  var where = queryBuilder(req);
+
+  db.Article
+    .find({
+      // limit: limit,
+      // offset: offset,
+      // order: [order],
+      where: where
+    })
+    .then(function(results) {
+      console.log('* article.server.controller - read *' + results);
+      res.json(results);
+    })
+    .catch(function(err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
     });
-  });
 };
 
 /**

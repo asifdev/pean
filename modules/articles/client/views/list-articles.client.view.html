@@ -23,7 +23,7 @@
     <!-- Item -->
     <form 
       data-ng-show="pane === 'search'"
-      data-ng-submit="submit()"
+      data-ng-submit="find()"
       class="itemForm" 
       name="itemForm" 
       novalidate
@@ -35,7 +35,7 @@
               <div class="form-group">
                 <label for="search">Search:</label>
                 <input
-                  data-ng-model="search.general"
+                  data-ng-model="search.article"
                   class="form-control"
                   id="search"
                   type="text"
@@ -123,7 +123,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="list-group">
-            <a ng-repeat="article in articles" class="list-group-item">
+            <a ng-repeat="article in results" class="list-group-item">
               <small class="list-group-item-text">
                 Posted on
                 <span ng-bind="article.createdAt | date:'mediumDate'"></span>

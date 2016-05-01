@@ -113,6 +113,46 @@
         };
 
         /**
+         * Read
+         * [read description]
+         * @return {[type]} [description]
+         */
+        $scope.read = function() {
+          console.log('* article.client.controller - read *');
+
+          var params = {
+            // limit: $scope.pageSize,
+            // offset: ($scope.currentPage - 1) * $scope.pageSize,
+            // order: $scope.order,
+            search: $scope.search
+          };
+
+          $http({
+            url: 'api/Articles',
+            method: 'GET',
+            params: params
+          })
+            .then(function(results) {
+              $scope.article = results.data.rows;
+              console.log($scope.article);
+
+              // $scope.totalItems = result.data.count;
+              // $scope.numberOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
+
+              // if ($scope.numberOfPages !== 0 && $scope.currentPage > $scope.numberOfPages) {
+              //   $scope.currentPage = $scope.numberOfPages;
+              // }
+
+              // var beginning = $scope.pageSize * $scope.currentPage - $scope.pageSize;
+              // var end = (($scope.pageSize * $scope.currentPage) > $scope.totalItems) ? $scope.totalItems : ($scope.pageSize * $scope.currentPage);
+
+              // $scope.pageRange = beginning + ' ~ ' + end;
+            }, function(err) {
+              $scope.error = err.data.message;
+            });
+        };
+
+        /**
          * Create
          * [create description]
          * @return {[type]} [description]
@@ -231,6 +271,19 @@
             }, function(err) {
               $scope.error = err.data.message;
             });
+        };
+
+        /**
+         * Find
+         * [find description]
+         * @return {[type]} [description]
+         */
+        $scope.find = function() {
+          console.log('* general.client.controller - find *');
+
+          // $scope.currentPage = 1;
+          $scope.read();
+          $scope.itemForm.$setPristine();
         };
 
         /**
