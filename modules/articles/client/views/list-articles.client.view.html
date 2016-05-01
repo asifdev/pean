@@ -20,12 +20,12 @@
         </ul>
       </div>
     </div>
-    <!-- Item -->
+    <!-- Search -->
     <form 
       data-ng-show="pane === 'search'"
       data-ng-submit="find()"
-      class="itemForm" 
-      name="itemForm" 
+      class="searchForm" 
+      name="searchForm" 
       novalidate
     >
       <!-- ui-sref="articles.view({ articleId: article.id })" -->
@@ -185,30 +185,30 @@
         </div> -->
       </fieldset>
     </form>
-    <!-- Search -->
+    <!-- Article -->
     <form 
       data-ng-show="pane === 'article'"
       data-ng-submit="submit()"
-      class="searchForm" 
-      name="searchForm" 
+      class="articleForm" 
+      name="articleForm" 
       novalidate
     >
       <fieldset>
         <div class="col-md-12" id="new-content">
           <!-- <section> -->
             <div class="page-header">
-              <h1 data-ng-hide="editing">{{vm.article.id ? 'Edit Article' : 'New Article'}}</h1>
+              <h1 data-ng-hide="editing">New Article</h1>
               <h1 data-ng-show="editing">Update Article</h1>
             </div>
             <div class="col-md-12">
-              <form name="vm.form.articleForm" class="form-horizontal" ng-submit="vm.save(vm.form.articleForm.$valid)" novalidate>
+              <form name="articleForm" class="form-horizontal" novalidate>
                 <fieldset>
                   <div class="form-group" show-errors>
                     <label class="control-label" for="title">Title</label>
                     <input name="title" type="text" id="title" class="form-control" data-ng-model="item.title" placeholder="Title" required>
                     <div 
-                    ng-if="searchForm.title.$dirty || submitted"
-                    ng-messages="searchForm.title.$error"
+                    ng-if="articleForm.title.$dirty || submitted"
+                    ng-messages="articleForm.title.$error"
                   >
                     <div ng-message="required">This field is required.</div>
                   </div>
@@ -219,7 +219,7 @@
                   <div class="form-group">
                     <button data-ng-hide="editing"
                     type="submit"
-                    class="btn btn-default">{{vm.article.id ? 'Update' : 'Create'}}
+                    class="btn btn-default">Create
                     </button>
                     <button
                     data-ng-show="editing"

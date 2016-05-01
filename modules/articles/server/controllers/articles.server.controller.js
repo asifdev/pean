@@ -67,7 +67,8 @@ exports.create = function(req, res) {
   // console.log('* articles.server.controller - create *');
 
   // save and return and instance of article on the res object. 
-  db.Article.create({
+  db.Article
+  .create({
     title: req.body.title,
     content: req.body.content,
     userId: req.user.id

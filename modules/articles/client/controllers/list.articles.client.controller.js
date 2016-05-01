@@ -57,14 +57,13 @@
           console.log('* list.srticles.client.controller - clear *' + form);
 
           if (form === 'article') {
-            // $scope.editing = false;
-            // $scope.submitted = false;
+            $scope.editing = false;
+            $scope.submitted = false;
             $scope.item = {};
             // $scope.order = ['createdAt', 'DESC'];
-            $scope.itemForm.$setPristine();
+            $scope.articleForm.$setPristine();
           } else if (form === 'search') {
             $scope.search = {};
-            // $scope.search = {};
             // $scope.read();
             $scope.searchForm.$setPristine();
           }
@@ -173,7 +172,7 @@
                 console.log('Article successfully created');
                 $scope.item = {};
                 $scope.editing = false;
-                $scope.itemForm.$setPristine();
+                $scope.articleForm.$setPristine();
               }
             }, function(err) {
               $scope.error = err.data.message;
@@ -264,7 +263,7 @@
               if (result) {
                 $scope.item = {};
                 // $scope.editing = false;
-                $scope.itemForm.$setPristine();
+                $scope.articleForm.$setPristine();
                 // $route.reload();
                 // $scope.backLinkClick();
               }
@@ -283,7 +282,7 @@
 
           // $scope.currentPage = 1;
           $scope.read();
-          $scope.itemForm.$setPristine();
+          $scope.articleForm.$setPristine();
         };
 
         /**
@@ -316,7 +315,7 @@
               $scope.item.id = $scope.general.id;
               // $scope.item = {};
               // $scope.editing = false;
-              // $scope.itemForm.$setPristine();
+              // $scope.articleForm.$setPristine();
               // $scope.read();
             }
           }, function(err) {
@@ -342,7 +341,7 @@
 
           $scope.submitted = true;
 
-          if ($scope.itemForm.$valid) {
+          if ($scope.articleForm.$valid) {
             if ($scope.editing) {
               $scope.update($scope.item.id);
               $scope.list();
