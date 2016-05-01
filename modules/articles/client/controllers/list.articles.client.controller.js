@@ -262,10 +262,8 @@
             .then(function(result) {
               if (result) {
                 $scope.item = {};
-                // $scope.editing = false;
+                $scope.editing = false;
                 $scope.articleForm.$setPristine();
-                // $route.reload();
-                // $scope.backLinkClick();
               }
             }, function(err) {
               $scope.error = err.data.message;
@@ -338,14 +336,23 @@
 
           $scope.editing = true;
 
-          _.each($scope.articles[id - 1], function(value, key) {
-            $scope.item[key] = value;
+          _.each($scope.articles, function(value, key) {
+            console.log($scope.articles[key]);
+            if($scope.articles[key].id === id) {
+              _.each($scope.articles[key], function(value, key) {
+                  $scope.item[key] = value;
+              });
+            }
           });
+
+          // _.each($scope.articles[id], function(value, key) {
+          //   $scope.item[key] = value;
+          // });
         };
 
-        $scope.backLinkClick = function () {
-          // $route.reload();
-        };
+        // $scope.backLinkClick = function () {
+        //   // $route.reload();
+        // };
 
         /**
          * Submit
