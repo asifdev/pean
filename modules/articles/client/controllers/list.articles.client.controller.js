@@ -63,7 +63,7 @@
             // $scope.order = ['createdAt', 'DESC'];
             $scope.itemForm.$setPristine();
           } else if (form === 'search') {
-            $scope.item = {};
+            $scope.search = {};
             // $scope.search = {};
             // $scope.read();
             $scope.searchForm.$setPristine();
