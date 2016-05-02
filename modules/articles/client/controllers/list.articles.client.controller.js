@@ -6,6 +6,7 @@
     .controller('ArticlesListController', [
       'ArticlesService',
       '$http',
+      '_',
       '$scope',
       'Authentication',
       '$stateParams',
@@ -15,6 +16,7 @@
       function (
         ArticlesService,
         $http,
+        _,
         $scope,
         article,
         Authentication,
@@ -132,8 +134,8 @@
             params: params
           })
             .then(function(results) {
-              $scope.article = results.data.rows;
-              console.log($scope.article);
+              $scope.srcArticle = results.data;
+              console.log($scope.srcArticle);
 
               // $scope.totalItems = result.data.count;
               // $scope.numberOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
@@ -340,7 +342,7 @@
             console.log($scope.articles[key]);
             if($scope.articles[key].id === id) {
               _.each($scope.articles[key], function(value, key) {
-                  $scope.item[key] = value;
+                $scope.item[key] = value;
               });
             }
           });
