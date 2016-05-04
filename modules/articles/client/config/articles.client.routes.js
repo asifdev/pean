@@ -69,3 +69,26 @@
     return new ArticlesService();
   }
 })();
+
+// 'use strict';
+
+// angular.module('articles').config(['$stateProvider','$locationProvider',
+//   function($stateProvider,$locationProvider) {
+//     $stateProvider
+//       .state('articles', {
+//         url: '/articles',
+//         views: {
+//           'main@': {
+//             templateUrl: 'modules/articles/client/views/list-articles.client.view.html'
+//           },
+//           'navigation@': {
+//             // templateUrl: 'modules/core/client/views/navigation.client.view.html'
+//           }
+//         }
+//       });
+//     $locationProvider.html5Mode({
+//       enabled: true,
+//       requireBase: false
+//     });
+//   }
+// ]);

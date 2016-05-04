@@ -1,444 +1,402 @@
-// (function () {
-  'use strict';
+'use strict';
 
-  angular
-    .module('articles')
-    .controller('ArticlesListController', [
-      'ArticlesService',
-      '$http',
-      '_',
-      '$scope',
-      'Authentication',
-      '$stateParams',
-      '$state',
-      '$location',
-      // 'articleResolve',
+angular.module('articles').controller('ArticlesListController', [
+  'Authentication',
+  'ArticlesService',
 
-      function (
-        ArticlesService,
-        $http,
-        _,
-        $scope,
-        article,
-        Authentication,
-        $stateParams,
-        $state,
-        $location
-      ) {
-        
-        $scope.authentication = Authentication;
-        // var vm = this;
-        $scope.item = {};
-        $scope.search = {};
-        $scope.order = ['createdAt', 'DESC'];
-        $scope.editing = false;
-        $scope.pane = 'create';
-        // $scope.articles = ArticlesService.query();
-        console.log('* list.srticles.client.controller - ArticlesListController *');
+  '_',
+  'moment',
 
-        // Authentication check
-        // if (!$scope.authentication.user) {
-        //   $location.path('/authentication/signin');
-        // } else {
-        //   var roles = $scope.authentication.user.roles;
+  '$http',
+  '$rootScope',
+  '$scope',
+  '$stateParams',
+  '$location',
+  '$modal',
 
-        //   if (_.includes(roles, 'admin') || _.includes(roles, 'guest')) {
-        //     $scope.authenticated = true;
-        //   } else {
-        //     $location.path('/');
-        //   }
-        // }
+  function(
+    Authentication,
+    Inventoriy,
+
+    _,
+    moment,
+
+    $http,
+    $rootScope,
+    $scope,
+    $stateParams,
+    $location,
+    $modal
+  ) {
+    
+    $scope.authentication = Authentication;
+    
+    $scope.item = {};
+    $scope.search = {};
+    $scope.order = ['createdAt', 'DESC'];
+    
+    $scope.pane = 'article';
+    $scope.editing = false;
+
+    $scope.pageSizes = [5, 10, 15];
+    $scope.pageSize = $scope.pageSizes[0];
+    $scope.currentPage = 1;
+
+    // Authentication check
+    if (!$scope.authentication.user) {
+      $location.path('/authentication/signin');
+    } else {
+      var roles = $scope.authentication.user.roles;
+
+      if (_.includes(roles, 'admin') || _.includes(roles, 'guest')) {
         $scope.authenticated = true;
-        /**
-         * Tab
-         * [clickTab description]
-         * @param  {[type]} tab [description]
-         * @return {[type]}     [description]
-         */
-        $scope.tab = function(tab) {
-          console.log('* general.client.controller - tab *');
-
-          $scope.pane = tab;
-
-          // $scope.read();
-
-          if (tab === 'article') {
-            $scope.search = {};
-            $scope.searchForm.$setPristine();
-          }
-        };
-
-        /**
-         * Clear
-         * [clear description]
-         * @param  {[type]} form [description]
-         * @return {[type]}      [description]
-         */
-        $scope.clear = function(form) {
-          console.log('* list.srticles.client.controller - clear *' + form);
-
-          if (form === 'article') {
-            $scope.editing = false;
-            $scope.submitted = false;
-            $scope.item = {};
-            // $scope.order = ['createdAt', 'DESC'];
-            $scope.articleForm.$setPristine();
-          } else if (form === 'search') {
-            $scope.search = {};
-            // $scope.read();
-            $scope.searchForm.$setPristine();
-          }
-        };
-
-        console.log('* articles.client.controller - ArticlesController *');
-
-
-        // vm.article = article;
-        // // vm.authentication = Authentication;
-        // vm.error = null;
-        // vm.form = {};
-        // vm.remove = remove;
-        // vm.save = save;
-
-        // Remove existing Article
-        // $scope.remove = function() {
-        //   if (confirm('Are you sure you want to delete?')) {
-        //     vm.article.$remove($state.go('articles.list'));
-        //   }
-        // };
-
-        // Save Article
-        // $scope.save = function (isValid) {
-        //   if (!isValid) {
-        //     $scope.$broadcast('show-errors-check-validity', 'vm.form.articleForm');
-        //     return false;
-        //   }
-
-        //   // TODO: move create/update logic to service
-        //   if (vm.article.id) {
-        //     vm.article.$update(successCallback, errorCallback);
-        //   } else {
-        //     vm.article.$save(successCallback, errorCallback);
-        //   }
-
-        //   function successCallback(res) {
-        //     $state.go('articles.view', {
-        //       articleId: res.id
-        //     });
-        //   }
-
-        //   function errorCallback(res) {
-        //     vm.error = res.data.message;
-        //   }
-        // };
-
-        /**
-         * Read
-         * [read description]
-         * @return {[type]} [description]
-         */
-        $scope.read = function() {
-          console.log('* article.client.controller - read *');
-
-          var params = {
-            // limit: $scope.pageSize,
-            // offset: ($scope.currentPage - 1) * $scope.pageSize,
-            order: $scope.order,
-            search: $scope.search
-          };
-
-          $http({
-            url: 'api/articles',
-            method: 'GET',
-            params: params
-          })
-            .then(function(results) {
-              $scope.articles = results.data.rows;
-              console.log($scope.articles);
-
-              // $scope.totalItems = result.data.count;
-              // $scope.numberOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
-
-              // if ($scope.numberOfPages !== 0 && $scope.currentPage > $scope.numberOfPages) {
-              //   $scope.currentPage = $scope.numberOfPages;
-              // }
-
-              // var beginning = $scope.pageSize * $scope.currentPage - $scope.pageSize;
-              // var end = (($scope.pageSize * $scope.currentPage) > $scope.totalItems) ? $scope.totalItems : ($scope.pageSize * $scope.currentPage);
-
-              // $scope.pageRange = beginning + ' ~ ' + end;
-            }, function(err) {
-              $scope.error = err.data.message;
-            });
-        };
-
-        /**
-         * Create
-         * [create description]
-         * @return {[type]} [description]
-         */
-        $scope.create = function() {
-          console.log('* article.client.controller - create *');
-
-          var data = $scope.item;
-
-          $http({
-            url: 'api/Articles',
-            method: 'POST',
-            data: data
-          })
-            .then(function(result) {
-              if (result) {
-                console.log('Article successfully created');
-                $scope.read();
-                $scope.item = {};
-                $scope.editing = false;
-                $scope.articleForm.$setPristine();
-              }
-            }, function(err) {
-              $scope.error = err.data.message;
-            });
-        };
-
-        /**
-         * Delete
-         * [delete description]
-         * @param  {[type]} id [description]
-         * @return {[type]}    [description]
-         */
-        $scope.delete = function(id) {
-          var params = {
-            id: id
-          };
-
-          $http({
-            url: 'api/Articles/' + id,
-            method: 'DELETE'
-          })
-            .then(function(result) {
-              if (result) {
-                $scope.read();
-                console.log('Article successfully deleted');
-              }
-            }, function(err) {
-              $scope.error = err.data.message;
-            });
-        };
-        
-        $scope.list = function() {
-          console.log('* general.client.controller - read *');
-
-          // var params = {
-          //   limit: $scope.pageSize,
-          //   offset: ($scope.currentPage - 1) * $scope.pageSize,
-          //   search: $scope.search,
-          //   order: $scope.order
-          // };
-
-          $http({
-            url: 'api/Articles',
-            method: 'GET'
-            // params: params,
-          })
-            .then(function(result) {
-              $scope.general = result.data.rows;
-              console.log($scope.general);
-
-              // $scope.totalItems = result.data.count;
-              // $scope.numberOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
-
-              // if ($scope.numberOfPages !== 0 && $scope.currentPage > $scope.numberOfPages) {
-              //   $scope.currentPage = $scope.numberOfPages;
-              // }
-
-              // var beginning = $scope.pageSize * $scope.currentPage - $scope.pageSize;
-              // var end = (($scope.pageSize * $scope.currentPage) > $scope.totalItems) ? $scope.totalItems : ($scope.pageSize * $scope.currentPage);
-
-              // $scope.pageRange = beginning + ' ~ ' + end;
-            }, function(err) {
-              $scope.error = err.data.message;
-            });
-        };
-
-        /**
-         * Update
-         * [update description]
-         * @param  {[type]} id [description]
-         * @return {[type]}    [description]
-         */
-        $scope.update = function(id) {
-          console.log('* general.client.controller - update *');
-
-          var data = $scope.item;
-
-          var params = {
-            id: id
-          };
-
-          $http({
-            url: 'api/Articles/' + id,
-            method: 'PUT',
-            data: data
-          })
-            .then(function(result) {
-              if (result) {
-                $scope.item = {};
-                $scope.editing = false;
-                $scope.articleForm.$setPristine();
-              }
-            }, function(err) {
-              $scope.error = err.data.message;
-            });
-        };
-
-        /**
-         * Find
-         * [find description]
-         * @return {[type]} [description]
-         */
-        $scope.find = function() {
-          console.log('* general.client.controller - find *');
-
-          // $scope.currentPage = 1;
-          $scope.read();
-          $scope.articleForm.$setPristine();
-        };
-
-        /**
-         * Edit
-         * [edit description]
-         * @param  {[type]} id [description]
-         * @return {[type]}    [description]
-         */
-        // $scope.edit = function(id) {
-        //   console.log('* general.client.controller - edit *');
-
-        //   $scope.editing = true;
-
-        //   var params = {
-        //     id: id
-        //   };
-
-        //   $http({
-        //     url: 'api/Articles/' + id,
-        //     method: 'GET',
-        //     // data: data
-        //   })
-        //   .then(function(result) {
-        //     if (result) {
-        //       $scope.editing = true;
-        //       $scope.general = result.data;
-        //       console.log($scope.general);
-        //       $scope.item.title = $scope.general.title;
-        //       $scope.item.content = $scope.general.content;
-        //       $scope.item.id = $scope.general.id;
-        //       // $scope.item = {};
-        //       // $scope.editing = false;
-        //       // $scope.articleForm.$setPristine();
-        //       // $scope.read();
-        //     }
-        //   }, function(err) {
-        //     $scope.error = err.data.message;
-        //   });
-
-        // // _.each($scope.general[id], function(value, key) {
-        // //   $scope.item[key] = value;
-        // // });
-        // };
-
-        /**
-         * Edit
-         * [edit description]
-         * @param  {[type]} id [description]
-         * @return {[type]}    [description]
-         */
-        $scope.edit = function(id) {
-          console.log('* article.client.controller - edit *');
-
-          $scope.editing = true;
-
-          _.each($scope.articles[id], function(value, key) {
-            $scope.item[key] = value;
-          });
-        };
-
-          // _.each($scope.articles[id], function(value, key) {
-          //   $scope.item[key] = value;
-          // });
-        // };
-
-        // $scope.backLinkClick = function () {
-        //   // $route.reload();
-        // };
-
-        /**
-         * Submit
-         * [submit description]
-         * @return {[type]} [description]
-         */
-        $scope.submit = function() {
-          console.log('* general.client.controller - submit *');
-
-          $scope.submitted = true;
-
-          if ($scope.articleForm.$valid) {
-            if ($scope.editing) {
-              $scope.update($scope.item.id);
-              // $scope.list();
-              // $scope.clear('item');
-            } else {
-              // $scope.currentPage = 1;
-              $scope.create();
-              // $scope.list();
-              // $scope.clear('item');
-            }
-          }
-        };
-
-        /**
-         * Initilaze Table
-         * [initTable description]
-         * @return {[type]} [description]
-         */
-        $scope.initTable = function() {
-          console.log('* general.client.controller - initTable *');
-
-          // console.log('* general.client.controller - read *');
-
-          var params = {
-            // limit: $scope.pageSize,
-            // offset: ($scope.currentPage - 1) * $scope.pageSize,
-            search: $scope.search,
-            order: $scope.order
-          };
-
-          $http({
-            url: 'api/Articles',
-            method: 'GET',
-            params: params
-          })
-            .then(function(results) {
-              $scope.srcArticle = results.data.rows;
-              console.log(results);
-            }, function(err) {
-              console.log(err);
-              $scope.error = err.data.message;
-            });
-        };
-        /**
-         * Init
-         * [init description]
-         * @return {[type]} [description]
-         */
-        $scope.init = function() {
-          console.log('* article.client.controller - init *');
-          if ($scope.authenticated) {
-            $scope.read();
-            $scope.initTable();
-            // $scope.list();
-            $scope.pane = 'article';
-          }
-        };
+      } else {
+        $location.path('/');
       }
-    ]);
-// })();
+    }
+
+    /**
+     * Clear
+     * [clear description]
+     * @param  {[type]} form [description]
+     * @return {[type]}      [description]
+     */
+    $scope.clear = function(form) {
+      console.log('* article.client.controller - clear *');
+
+      if (form === 'article') {
+        $scope.editing = false;
+        $scope.submitted = false;
+        $scope.item = {};
+        $scope.order = ['createdAt', 'DESC'];
+        $scope.articleForm.$setPristine();
+      } else if (form === 'search') {
+        $scope.search = {};
+        $scope.read();
+        $scope.searchForm.$setPristine();
+      }
+    };
+
+    /**
+     * Edit
+     * [edit description]
+     * @param  {[type]} id [description]
+     * @return {[type]}    [description]
+     */
+    $scope.edit = function(id) {
+      console.log('* article.client.controller - edit *');
+
+      $scope.editing = true;
+
+      _.each($scope.articles[id], function(value, key) {
+        $scope.item[key] = value;
+      });
+    };
+
+    /**
+     * Find
+     * [find description]
+     * @return {[type]} [description]
+     */
+    $scope.find = function() {
+      console.log('* article.client.controller - find *');
+
+      // $scope.currentPage = 1;
+      $scope.read();
+      $scope.articleForm.$setPristine();
+    };
+
+    /**
+     * Sort
+     * [sort description]
+     * @param  {[type]} column [description]
+     * @return {[type]}        [description]
+     */
+    $scope.sort = function(column) {
+      console.log('* article.client.controller - sort *');
+
+      var direction = 'DESC';
+
+      if ($scope.order[0] === column) {
+        direction = ($scope.order[1] === 'ASC') ? $scope.order[1] = 'DESC' : $scope.order[1] = 'ASC';
+      }
+
+      $scope.order = [column, direction];
+      $scope.read();
+    };
+
+    /**
+     * Submit
+     * [submit description]
+     * @return {[type]} [description]
+     */
+    $scope.submit = function() {
+      console.log('* article.client.controller - submit *');
+
+      $scope.submitted = true;
+
+      if ($scope.articleForm.$valid) {
+        if ($scope.editing) {
+          $scope.update($scope.item.id);
+          $scope.clear('article');
+        } else {
+          // $scope.currentPage = 1;
+          $scope.create();
+          $scope.clear('article');
+        }
+      }
+    };
+
+    /**
+     * Tab
+     * [clickTab description]
+     * @param  {[type]} tab [description]
+     * @return {[type]}     [description]
+     */
+    $scope.tab = function(tab) {
+      console.log('* article.client.controller - tab *');
+
+      $scope.pane = tab;
+
+      $scope.read();
+
+      if (tab === 'article') {
+        $scope.search = {};
+        $scope.searchForm.$setPristine();
+      }
+    };
+
+    /**
+     * CRUD
+     */
+
+     /**
+     * Create
+     * [create description]
+     * @return {[type]} [description]
+     */
+    $scope.create = function() {
+      console.log('* article.client.controller - create *');
+
+      var data = $scope.item;
+
+      $http({
+        url: 'api/Articles',
+        method: 'POST',
+        data: data
+      })
+        .then(function(result) {
+          if (result) {
+            $scope.read();
+          }
+        }, function(err) {
+          $scope.error = err.data.message;
+        });
+    };
+
+    /**
+     * Delete
+     * [delete description]
+     * @param  {[type]} id [description]
+     * @return {[type]}    [description]
+     */
+    $scope.delete = function(id) {
+      var params = {
+        id: id
+      };
+
+      $http({
+        url: 'api/Articles/' + id,
+        method: 'DELETE'
+      })
+        .then(function(result) {
+          if (result) {
+            $scope.read();
+          }
+        }, function(err) {
+          $scope.error = err.data.message;
+        });
+    };
+
+    /**
+     * Read
+     * [read description]
+     * @return {[type]} [description]
+     */
+    $scope.read = function() {
+      console.log('* article.client.controller - read *');
+
+      var params = {
+        limit: $scope.pageSize,
+        offset: ($scope.currentPage - 1) * $scope.pageSize,
+        order: $scope.order,
+        search: $scope.search
+      };
+
+      $http({
+        url: 'api/articles',
+        method: 'GET',
+        params: params
+      })
+        .then(function(results) {
+          $scope.articles = results.data.rows;
+          console.log($scope.articles);
+
+          // $scope.totalItems = result.data.count;
+          // $scope.numberOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
+
+          // if ($scope.numberOfPages !== 0 && $scope.currentPage > $scope.numberOfPages) {
+          //   $scope.currentPage = $scope.numberOfPages;
+          // }
+
+          // var beginning = $scope.pageSize * $scope.currentPage - $scope.pageSize;
+          // var end = (($scope.pageSize * $scope.currentPage) > $scope.totalItems) ? $scope.totalItems : ($scope.pageSize * $scope.currentPage);
+
+          // $scope.pageRange = beginning + ' ~ ' + end;
+        }, function(err) {
+          $scope.error = err.data.message;
+        });
+    };
+
+    /**
+     * Update
+     * [update description]
+     * @param  {[type]} id [description]
+     * @return {[type]}    [description]
+     */
+    $scope.update = function(id) {
+      console.log('* article.client.controller - update *');
+
+      var data = $scope.item;
+
+      var params = {
+        id: id
+      };
+
+      $http({
+        url: 'api/Articles/' + id,
+        method: 'PUT',
+        data: data
+      })
+        .then(function(result) {
+          if (result) {
+            $scope.item = {};
+            $scope.editing = false;
+            $scope.articleForm.$setPristine();
+            $scope.read();
+          }
+        }, function(err) {
+          $scope.error = err.data.message;
+        });
+    };
+
+    /**
+     * Pagination
+     */
+
+    /**
+     * Change page
+     * [changePage description]
+     * @return {[type]} [description]
+     */
+    $scope.changePage = function() {
+      // console.log('* general.client.controller - changePage *');
+
+      if (!angular.isNumber($scope.currentPage)) {
+        $scope.currentPage = 1;
+      }
+
+      if ($scope.currentPage === '') {
+        $scope.currentPage = 1;
+      } else if ($scope.currentPage > $scope.numberOfPages) {
+        $scope.currentPage = $scope.numberOfPages;
+      }
+
+      $scope.paginationForm.$setPristine();
+      $scope.read();
+    };
+
+    /**
+     * Change size
+     * [changeSize description]
+     * @return {[type]} [description]
+     */
+    $scope.changeSize = function() {
+      // console.log('* general.client.controller - changeSize *');
+
+      $scope.paginationForm.$setPristine();
+
+      $scope.currentPage = 1;
+
+      $scope.read();
+    };
+
+    /**
+     * Click fast backward
+     * [clickFastBackward description]
+     * @return {[type]} [description]
+     */
+    $scope.clickFastBackward = function() {
+      // console.log('* general.client.controller - clickFastBackward *');
+
+      if ($scope.currentPage !== 1) {
+        $scope.currentPage = 1;
+        $scope.read();
+      }
+    };
+
+    /**
+     * Click backward
+     * [clickBackward description]
+     * @return {[type]} [description]
+     */
+    $scope.clickBackward = function() {
+      // console.log('* general.client.controller - clickBackward *');
+
+      if ($scope.currentPage !== 1) {
+        $scope.currentPage--;
+        $scope.read();
+      }
+    };
+
+    /**
+     * Click forward
+     * [clickForward description]
+     * @return {[type]} [description]
+     */
+    $scope.clickForward = function() {
+      // console.log('* general.client.controller - clickForward *');
+
+      if ($scope.currentPage !== $scope.numberOfPages && $scope.numberOfPages !== 0) {
+        $scope.currentPage++;
+        $scope.read();
+      }
+    };
+
+    /**
+     * Click fast foward
+     * [clickFastForward description]
+     * @return {[type]} [description]
+     */
+    $scope.clickFastForward = function() {
+      // console.log('* general.client.controller - clickFastForward *');
+
+      if ($scope.currentPage !== $scope.numberOfPages && $scope.numberOfPages !== 0) {
+        $scope.currentPage = $scope.numberOfPages;
+        $scope.read();
+      }
+    };
+
+    /**
+     * Init
+     * [init description]
+     * @return {[type]} [description]
+     */
+    $scope.init = function() {
+      console.log('* article.client.controller - init *');
+      if ($scope.authenticated) {
+        $scope.read();
+      }
+    };
+  }
+]);
