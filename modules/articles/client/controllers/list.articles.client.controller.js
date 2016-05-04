@@ -153,8 +153,8 @@
             params: params
           })
             .then(function(results) {
-              $scope.srcArticle = results.data.rows;
-              console.log($scope.srcArticle);
+              $scope.articles = results.data.rows;
+              console.log($scope.articles);
 
               // $scope.totalItems = result.data.count;
               // $scope.numberOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
@@ -353,11 +353,11 @@
          * @return {[type]}    [description]
          */
         $scope.edit = function(id) {
-          console.log('* general.client.controller - edit *');
+          console.log('* article.client.controller - edit *');
 
           $scope.editing = true;
 
-          _.each($scope.general[id], function(value, key) {
+          _.each($scope.articles[id], function(value, key) {
             $scope.item[key] = value;
           });
         };
