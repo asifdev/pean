@@ -3,7 +3,10 @@
 /**
  * Module dependencies
  */
-var path = require('path'),
+var _ = require('lodash'),
+  chalk = require('chalk'),
+  path = require('path'),
+  config = require(path.resolve('./config/config')),
   db = require(path.resolve('./config/lib/sequelize')),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
@@ -14,7 +17,7 @@ var path = require('path'),
  * @return {[type]}     [description]
  */
 var queryBuilder = function(req) {
-  console.log('* general.server.controller - queryBuilder *');
+  console.log('* article.server.controller - queryBuilder *');
 
   var search = JSON.parse(req.query.search);
 
@@ -24,11 +27,15 @@ var queryBuilder = function(req) {
 
   if (search.article) {
     orConditions.push({
-      'title': {
+      'component_id': {
         $like: '%' + search.article + '%'
       }
     }, {
-      'content': {
+      'description': {
+        $like: '%' + search.article + '%'
+      }
+    }, {
+      'name': {
         $like: '%' + search.article + '%'
       }
     });
@@ -50,13 +57,17 @@ var queryBuilder = function(req) {
     });
   }
 
-  queries.push({
-    $and: andConditions
-  });
-  queries.push({
-    $or: orConditions
-  });
-
+  if (!_.isEmpty(andConditions)) {
+    queries.push({
+      $and: andConditions
+    });
+  }
+  
+  if (!_.isEmpty(orConditions)) {
+    queries.push({
+      $or: orConditions
+    });
+  }
   return queries;
 };
 
@@ -179,20 +190,21 @@ exports.read = function(req, res) {
 
   // var limit = req.query.limit,
   //   offset = req.query.offset,
-  //   order = req.query.order;
-
-  var where = queryBuilder(req);
+  var order = req.query.order,
+    where = queryBuilder(req);
 
   db.Article
-    .find({
+    .findAndCountAll({
       // limit: limit,
       // offset: offset,
-      // order: [order],
+      order: [order],
       where: where
     })
     .then(function(results) {
-      console.log('* article.server.controller - read *' + results);
+      // console.log('* article.server.controller - read *' + results);
       res.json(results);
+      // $scope.results = result.data.rows;
+      // console.log($scope.general);
     })
     .catch(function(err) {
       return res.status(400).send({
@@ -278,6 +290,50 @@ exports.update = function(req, res) {
       });
 
       return null;
+    })
+    .catch(function(err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    });
+};
+
+/**
+ * Initial Table
+ * [read description]
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
+exports.initTable = function(req, res) {
+  console.log('* article.server.controller - initTable *');
+
+  // var offset = req.query.offset,
+  //   limit = req.query.limit,
+  var order = req.query.order;
+
+  // var where = queryBuilder(req);
+  // Project.findAll({ limit: 10 })
+
+  db.Articles
+    .findAll({
+      // limit: limit,
+      // offset: offset,
+      order: [order],
+      where: {
+        id: {
+          $ne: null
+        }
+      }
+    })
+  // db.General.findAll({
+  //   include: [
+  //     db.User
+  //   ]
+  // })
+    .then(function(results) {
+      console.log('* article.server.controller - initTable *');
+      res.json(results);
     })
     .catch(function(err) {
       return res.status(400).send({

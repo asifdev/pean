@@ -120,41 +120,49 @@
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="list-group">
-            <a ng-repeat="article in srcArticle" class="list-group-item">
-              <small class="list-group-item-text">
-                Posted on
-                <span ng-bind="article.createdAt | date:'mediumDate'"></span>
-                by
-                <span ng-if="article.User" ng-bind="article.User.displayName"></span>
-                <span ng-if="!article.User">Deleted User</span>
-              </small>
-              <h4 class="list-group-item-heading" ng-bind="article.title"></h4>
-              <p class="list-group-item-text" ng-bind="article.content"></p>
-              <div class="group-button">
-                  <button
-                      data-ng-click="edit(article.id)"
-                      class="btn btn-default"
-                      >
-                    <i class="fa fa-edit"></i>
-                  </button>
-                  <button
-                      data-ng-click="delete(article.id)"
-                      oc-message="Are you sure you want to remove item <strong>{{article.id}}</strong> from general?"
-                      class="btn btn-default article-delete"
-                      >
-                    <i class="fa fa-trash-o"></i>
-                  </button>
-                </div>
-            </a>
-          </div>
-          <div class="alert alert-warning text-center" ng-if="articles.$resolved && !articles.length">
-            No articles yet, why don't you <a ui-sref="articles.create">create one</a>?
-          </div>
-        </div>
-      </div>
+        <!-- Table -->
+        <!-- <div class="row"> -->
+          <!-- <div class="col-md-12"> -->
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <tr>
+                  <th></th>
+                   <th class="text-center sort" ng-click="sort('id')">Article ID</th>
+                  <th class="text-center sort" ng-click="sort('createdAt')">Created</th>
+                  <!--<th class="text-center sort" ng-click="sort('general_id')">General ID</th>
+                  <th class="text-center sort" ng-click="sort('name')">Name</th>
+                  <th class="text-center sort" ng-click="sort('description')">Description</th> -->
+                  <th class="text-center sort" ng-click="sort('title')">Article Title</th>
+                  <th class="text-center sort" ng-click="sort('title-content')">Article Content</th>
+                </tr>
+                <tr data-ng-repeat="item in srcArticle track by $index">
+                  <td>
+                    <button
+                        data-ng-click="edit($index)"
+                        class="btn btn-default"
+                        >
+                      <i class="fa fa-edit"></i>
+                    </button>
+                    <button
+                        oc-confirmation-click="delete(item.id)"
+                        oc-message="Are you sure you want to remove item <strong>{{item.id}}</strong> from article?"
+                        class="btn btn-default"
+                        >
+                      <i class="fa fa-trash-o"></i>
+                    </button>
+                  </td>
+                  <td data-ng-bind-html="item.id" class="text-center"></td>
+                  <td data-ng-bind-html="item.createdAt | date:'medium'" class="text-center"></td>
+                  <!-- <td data-ng-bind-html="item.general_id" class="text-center"></td>
+                  <td data-ng-bind-html="item.name" class="text-center"></td>
+                  <td data-ng-bind-html="item.description" class="text-center"></td> -->
+                  <td data-ng-bind-html="item.title" class="text-center"></td>
+                  <td data-ng-bind-html="item.content" class="text-center"></td>
+                </tr>
+              </table>
+            </div>
+          <!-- </div> -->
+        <!-- </div> -->
         <!-- </div> -->
        <!--  <div class="row">
           <div class="col-md-12">
@@ -247,7 +255,7 @@
           <div class="row">
           <div class="col-md-12">
             <div class="list-group">
-            <a ng-repeat="article in articles" class="list-group-item">
+            <a ng-repeat="article in srcArticle" class="list-group-item">
               <small class="list-group-item-text">
                 Posted on
                 <span ng-bind="article.createdAt | date:'mediumDate'"></span>

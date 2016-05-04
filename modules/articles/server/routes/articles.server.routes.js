@@ -9,12 +9,12 @@ var articlesPolicy = require('../policies/articles.server.policy'),
 module.exports = function(app) {
   // Articles collection routes
   app.route('/api/articles').all(articlesPolicy.isAllowed)
-    .get(articles.list)
+    .get(articles.read)
     .post(articles.create);
 
   // Single article routes
   app.route('/api/articles/:articleId').all(articlesPolicy.isAllowed)
-    .get(articles.read)
+    // .get(articles.read)
     .put(articles.update)
     .delete(articles.delete);
 };

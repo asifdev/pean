@@ -11,6 +11,7 @@
       'Authentication',
       '$stateParams',
       '$state',
+      '$location',
       // 'articleResolve',
 
       function (
@@ -21,15 +22,33 @@
         article,
         Authentication,
         $stateParams,
-        $state
+        $state,
+        $location
       ) {
-        var vm = this;
+        
+        $scope.authentication = Authentication;
+        // var vm = this;
         $scope.item = {};
+        $scope.search = {};
+        $scope.order = ['createdAt', 'DESC'];
         $scope.editing = false;
         $scope.pane = 'create';
-        $scope.articles = ArticlesService.query();
+        // $scope.articles = ArticlesService.query();
         console.log('* list.srticles.client.controller - ArticlesListController *');
 
+        // Authentication check
+        // if (!$scope.authentication.user) {
+        //   $location.path('/authentication/signin');
+        // } else {
+        //   var roles = $scope.authentication.user.roles;
+
+        //   if (_.includes(roles, 'admin') || _.includes(roles, 'guest')) {
+        //     $scope.authenticated = true;
+        //   } else {
+        //     $location.path('/');
+        //   }
+        // }
+        $scope.authenticated = true;
         /**
          * Tab
          * [clickTab description]
@@ -43,7 +62,7 @@
 
           // $scope.read();
 
-          if (tab === 'create') {
+          if (tab === 'article') {
             $scope.search = {};
             $scope.searchForm.$setPristine();
           }
@@ -74,10 +93,10 @@
         console.log('* articles.client.controller - ArticlesController *');
 
 
-        vm.article = article;
-        vm.authentication = Authentication;
-        vm.error = null;
-        vm.form = {};
+        // vm.article = article;
+        // // vm.authentication = Authentication;
+        // vm.error = null;
+        // vm.form = {};
         // vm.remove = remove;
         // vm.save = save;
 
@@ -124,17 +143,17 @@
           var params = {
             // limit: $scope.pageSize,
             // offset: ($scope.currentPage - 1) * $scope.pageSize,
-            // order: $scope.order,
+            order: $scope.order,
             search: $scope.search
           };
 
           $http({
-            url: 'api/Articles',
+            url: 'api/articles',
             method: 'GET',
             params: params
           })
             .then(function(results) {
-              $scope.srcArticle = results.data;
+              $scope.srcArticle = results.data.rows;
               console.log($scope.srcArticle);
 
               // $scope.totalItems = result.data.count;
@@ -170,8 +189,8 @@
           })
             .then(function(result) {
               if (result) {
-                // $scope.read();
                 console.log('Article successfully created');
+                $scope.read();
                 $scope.item = {};
                 $scope.editing = false;
                 $scope.articleForm.$setPristine();
@@ -198,7 +217,7 @@
           })
             .then(function(result) {
               if (result) {
-                $scope.list();
+                $scope.read();
                 console.log('Article successfully deleted');
               }
             }, function(err) {
@@ -338,19 +357,15 @@
 
           $scope.editing = true;
 
-          _.each($scope.articles, function(value, key) {
-            console.log($scope.articles[key]);
-            if($scope.articles[key].id === id) {
-              _.each($scope.articles[key], function(value, key) {
-                $scope.item[key] = value;
-              });
-            }
+          _.each($scope.general[id], function(value, key) {
+            $scope.item[key] = value;
           });
+        };
 
           // _.each($scope.articles[id], function(value, key) {
           //   $scope.item[key] = value;
           // });
-        };
+        // };
 
         // $scope.backLinkClick = function () {
         //   // $route.reload();
@@ -369,15 +384,46 @@
           if ($scope.articleForm.$valid) {
             if ($scope.editing) {
               $scope.update($scope.item.id);
-              $scope.list();
+              // $scope.list();
               // $scope.clear('item');
             } else {
               // $scope.currentPage = 1;
               $scope.create();
-              $scope.list();
+              // $scope.list();
               // $scope.clear('item');
             }
           }
+        };
+
+        /**
+         * Initilaze Table
+         * [initTable description]
+         * @return {[type]} [description]
+         */
+        $scope.initTable = function() {
+          console.log('* general.client.controller - initTable *');
+
+          // console.log('* general.client.controller - read *');
+
+          var params = {
+            // limit: $scope.pageSize,
+            // offset: ($scope.currentPage - 1) * $scope.pageSize,
+            search: $scope.search,
+            order: $scope.order
+          };
+
+          $http({
+            url: 'api/Articles',
+            method: 'GET',
+            params: params
+          })
+            .then(function(results) {
+              $scope.srcArticle = results.data.rows;
+              console.log(results);
+            }, function(err) {
+              console.log(err);
+              $scope.error = err.data.message;
+            });
         };
         /**
          * Init
@@ -387,8 +433,9 @@
         $scope.init = function() {
           console.log('* article.client.controller - init *');
           if ($scope.authenticated) {
-            // $scope.read();
-            $scope.list();
+            $scope.read();
+            $scope.initTable();
+            // $scope.list();
             $scope.pane = 'article';
           }
         };
