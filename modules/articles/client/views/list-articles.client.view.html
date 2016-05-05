@@ -2,7 +2,7 @@
     data-ng-controller="ArticlesListController"
     data-ng-init="init()"
     data-ng-show="authenticated"
-    class="page-wrapper general" 
+    class="page-wrapper article" 
     oc-full-height
 >
   <div class="row">
@@ -78,7 +78,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <!-- <div class="row"> -->
               <div class="col-md-12">
                 <div class="form-group">
                   <button
@@ -104,7 +104,7 @@
                   </button>
                 </div>
               </div>
-            </div>
+            <!-- </div> -->
           </fieldset>
         </form>
         <!-- Search-->
@@ -229,7 +229,7 @@
                         <i class="fa fa-edit"></i>
                       </button>
                       <button
-                          oc-confirmation-click="delete(item.id)"
+                          ng-click="delete(item.id)"
                           oc-message="Are you sure you want to remove item <strong>{{item.id}}</strong> from article?"
                           class="btn btn-default"
                           >

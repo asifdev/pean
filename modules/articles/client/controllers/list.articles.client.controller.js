@@ -101,7 +101,7 @@ angular.module('articles').controller('ArticlesListController', [
     $scope.find = function() {
       console.log('* article.client.controller - find *');
 
-      // $scope.currentPage = 1;
+      $scope.currentPage = 1;
       $scope.read();
       $scope.articleForm.$setPristine();
     };
@@ -140,7 +140,7 @@ angular.module('articles').controller('ArticlesListController', [
           $scope.update($scope.item.id);
           $scope.clear('article');
         } else {
-          // $scope.currentPage = 1;
+          $scope.currentPage = 1;
           $scope.create();
           $scope.clear('article');
         }
@@ -242,17 +242,17 @@ angular.module('articles').controller('ArticlesListController', [
           $scope.articles = results.data.rows;
           console.log($scope.articles);
 
-          // $scope.totalItems = result.data.count;
-          // $scope.numberOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
+          $scope.totalItems = results.data.count;
+          $scope.numberOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
 
-          // if ($scope.numberOfPages !== 0 && $scope.currentPage > $scope.numberOfPages) {
-          //   $scope.currentPage = $scope.numberOfPages;
-          // }
+          if ($scope.numberOfPages !== 0 && $scope.currentPage > $scope.numberOfPages) {
+            $scope.currentPage = $scope.numberOfPages;
+          }
 
-          // var beginning = $scope.pageSize * $scope.currentPage - $scope.pageSize;
-          // var end = (($scope.pageSize * $scope.currentPage) > $scope.totalItems) ? $scope.totalItems : ($scope.pageSize * $scope.currentPage);
+          var beginning = $scope.pageSize * $scope.currentPage - $scope.pageSize;
+          var end = (($scope.pageSize * $scope.currentPage) > $scope.totalItems) ? $scope.totalItems : ($scope.pageSize * $scope.currentPage);
 
-          // $scope.pageRange = beginning + ' ~ ' + end;
+          $scope.pageRange = beginning + ' ~ ' + end;
         }, function(err) {
           $scope.error = err.data.message;
         });

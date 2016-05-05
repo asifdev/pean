@@ -1,0 +1,14 @@
+.article button {
+  margin-right: 4px;
+}
+.article form.ng-submitted .ng-invalid {
+  border-color: #fa787e;
+  border-width: 1px;
+}
+.article .nav-tabs {
+  margin-bottom: 20px;
+}
+.article .sort {
+  color: #337ab7;
+  cursor: pointer;
+}
