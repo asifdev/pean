@@ -179,7 +179,7 @@ exports.update = function(req, res) {
         .update(data)
         .then(function() {
           res.json(true);
-      })
+        })
       .catch(function(err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)

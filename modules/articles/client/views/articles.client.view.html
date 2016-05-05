@@ -1,0 +1,307 @@
+<div
+    data-ng-controller="ArticlesListController"
+    data-ng-init="init()"
+    data-ng-show="authenticated"
+    class="page-wrapper article" 
+    oc-full-height
+>
+  <div class="row">
+    <div class="col-md-12">
+      <section>
+        <div class="row">
+          <div class="col-md-12">
+            <h2 class="page-header"><i class="fa fa-newspaper-o fa-fw"></i> Article</h2>
+          </div>
+        </div>
+        <!-- Tabs -->
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="nav nav-tabs">
+              <li 
+                data-ng-class="pane === 'article' ? 'active' : ''" 
+                data-ng-click="tab('article')"
+              ><a href="#"><i class="fa fa-newspaper-o fa-fw"></i> Article</a></li>
+              <li 
+                data-ng-class="pane === 'search' ? 'active' : ''" 
+                data-ng-click="tab('search')"
+              ><a href="#"><i class="fa fa-search fa-fw"></i> Search</a></li>
+            </ul>
+          </div>
+        </div>
+        <!-- Article -->
+        <form 
+          data-ng-show="pane === 'article'"
+          data-ng-submit="submit()"
+          class="articleForm" 
+          name="articleForm" 
+          novalidate
+        >
+          <fieldset>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="title">Title</label>
+                    <input
+                      data-ng-model="item.title"
+                      class="form-control"
+                      id="title"
+                      name="title"
+                      type="text"
+                      required
+                    >
+                    <div 
+                      ng-if="articleForm.title.$dirty || submitted"
+                      ng-messages="articleForm.title.$error"
+                    >
+                      <div ng-message="required">This field is required.</div>
+                    </div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="content">Content</label>
+                  <textarea
+                    name="content"
+                    data-ng-model="item.content"
+                    id="content"
+                    class="form-control"
+                    cols="30"
+                    rows="10"
+                    required
+                  >
+                  </textarea>
+                  <div 
+                    ng-if="articleForm.content.$dirty || submitted"
+                    ng-messages="articleForm.content.$error"
+                  >
+                    <div ng-message="required">This field is required.</div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="row"> -->
+              <div class="col-md-12">
+                <div class="form-group">
+                  <button
+                    data-ng-hide="editing"
+                    type="submit"
+                    class="btn btn-default"
+                  >
+                    <i class="fa fa-plus fa-fw"></i> Add
+                  </button>
+                  <button
+                    data-ng-show="editing"
+                    class="btn btn-default"
+                    type="submit"
+                  >
+                    <i class="fa fa-pencil fa-fw"></i> Update
+                  </button>
+                  <button
+                    data-ng-click="clear('article')"
+                    class="btn btn-default"
+                    type="button"
+                  >
+                    <i class="fa fa-times fa-fw"></i> Clear
+                  </button>
+                </div>
+              </div>
+            <!-- </div> -->
+          </fieldset>
+        </form>
+        <!-- Search-->
+        <form 
+          data-ng-show="pane === 'search'"
+          data-ng-submit="find()"
+          class="searchForm" 
+          name="searchForm" 
+          novalidate
+        >
+          <fieldset>
+            <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="search">Search:</label>
+                    <input
+                      data-ng-model="search.article"
+                      class="form-control"
+                      id="search"
+                      type="text"
+                    >
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label for="start-date">Start Date:</label>
+                  <div class="dropdown">
+                    <a 
+                      data-toggle="dropdown" 
+                      data-target="#" 
+                      class="dropdown-toggle" 
+                      href="#"
+                      id="start-date-dropdown"
+                    >
+                      <div class="input-group">
+                        <input
+                          data-ng-model="search.startDate"
+                          class="form-control"
+                          type="text"
+                          readonly
+                        >
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                      </div>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <datetimepicker
+                        data-ng-model="search.startDate"
+                        data-datetimepicker-config="{ dropdownSelector: '#start-date-dropdown' }"
+                        id="start-date"
+                      />
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label for="end-date">End Date:</label>
+                  <div class="dropdown">
+                    <a 
+                      data-toggle="dropdown" 
+                      data-target="#" 
+                      class="dropdown-toggle" 
+                      href="#"
+                      id="end-date-dropdown"
+                    >
+                      <div class="input-group">
+                        <input
+                          data-ng-model="search.endDate"
+                          class="form-control"
+                          type="text"
+                          readonly
+                        >
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                      </div>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <datetimepicker
+                        data-ng-model="search.endDate"
+                        data-datetimepicker-config="{ dropdownSelector: '#end-date-dropdown' }"
+                        id="end-date"
+                      />
+                    </ul>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button
+                    class="btn btn-default"
+                    type="submit"
+                  >
+                    <i class="fa fa-search fa-fw"></i> Find
+                  </button>
+                  <button
+                    data-ng-click="clear('search')"
+                    class="btn btn-default"
+                    type="button"
+                  >
+                    <i class="fa fa-times fa-fw"></i> Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+          </fieldset> 
+        </form>
+        <!-- Table -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <tr>
+                    <th></th>
+                     <th class="text-center sort" ng-click="sort('id')">Article ID</th>
+                    <th class="text-center sort" ng-click="sort('createdAt')">Created</th>
+                    <th class="text-center sort" ng-click="sort('title')">Article Title</th>
+                    <th class="text-center sort" ng-click="sort('title-content')">Article Content</th>
+                  </tr>
+                  <tr data-ng-repeat="item in articles track by $index">
+                    <td>
+                      <button
+                          data-ng-click="edit($index)"
+                          class="btn btn-default"
+                          >
+                        <i class="fa fa-edit"></i>
+                      </button>
+                      <button
+                          ng-click="delete(item.id)"
+                          oc-message="Are you sure you want to remove item <strong>{{item.id}}</strong> from article?"
+                          class="btn btn-default"
+                          >
+                        <i class="fa fa-trash-o"></i>
+                      </button>
+                    </td>
+                    <td data-ng-bind-html="item.id" class="text-center"></td>
+                    <td data-ng-bind-html="item.createdAt | date:'medium'" class="text-center"></td>
+                    <td data-ng-bind-html="item.title" class="text-center"></td>
+                    <td data-ng-bind-html="item.content" class="text-center"></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- Pagination -->
+        <div class="row custom-pagination">
+          <form name="paginationForm" class="form-inline" novalidate>
+            <div class="col-md-6 col-sm-12">
+              <div class="form-group">
+                <button
+                  data-ng-click="clickFastBackward()"
+                  data-ng-disabled="numberOfPages == 0 || currentPage == 1"
+                  class="btn btn-default"
+                ><i class="fa fa-fast-backward"></i>
+                </button>
+                <button
+                  data-ng-click="clickBackward()"
+                  data-ng-disabled="numberOfPages == 0 || currentPage == 1" class="btn btn-default"
+                ><i class="fa fa-backward"></i>
+                </button>
+                <input
+                  data-ng-change="changePage()"
+                  data-ng-disabled="numberOfPages == 0"
+                  data-ng-model="currentPage"
+                  data-ng-model-options="{ debounce: 1000 }"
+                  class="form-control input-small"
+                  min="1"
+                  max="numberOfPages"
+                  type="number"
+                >
+                <span>/ {{ numberOfPages }}</span>
+                <button
+                  data-ng-click="clickForward()"
+                  data-ng-disabled="numberOfPages == 0 || currentPage == numberOfPages"
+                  class="btn btn-default"
+                ><i class="fa fa-forward"></i>
+                </button>
+                <button
+                  data-ng-click="clickFastForward()"
+                  data-ng-disabled="numberOfPages == 0 || currentPage == numberOfPages"
+                  class="btn btn-default"
+                ><i class="fa fa-fast-forward"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+              <select
+                data-ng-change="changeSize()"
+                data-ng-disabled="numberOfPages == 0" ng-model="pageSize" class="form-control"
+                data-ng-options="pageSize as pageSize for pageSize in pageSizes"
+              ></select>
+              <span>items per page</span>
+            </div>
+            <div class="col-md-3 col-sm-12">
+              <div style="margin-top: 6px">
+                <p>{{ pageRange }} of {{ totalItems }} items</p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

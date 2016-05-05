@@ -16,7 +16,7 @@ angular.module('articles').controller('ArticlesListController', [
 
   function(
     Authentication,
-    Inventoriy,
+    ArticlesService,
 
     _,
     moment,
