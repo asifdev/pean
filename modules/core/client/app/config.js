@@ -20,7 +20,8 @@ var ApplicationConfiguration = (function() {
     angular.module(moduleName, dependencies || [
       'angularMoment',
       'angular-capitalize-filter',
-      'ngSanitize'
+      'ngSanitize',
+      'ui.bootstrap.datetimepicker'
     ]).constant('_', window._);
 
     // Add the module to the AngularJS configuration file

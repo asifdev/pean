@@ -4,12 +4,17 @@ module.exports = {
   client: {
     lib: {
       css: [
+        'public/lib/angular-bootstrap-datetimepicker/src/css/datetimepicker.css',
         'public/lib/bootstrap/dist/css/bootstrap.css',
         'public/lib/bootstrap/dist/css/bootstrap-theme.css',
         'public/lib/font-awesome/css/font-awesome.css',
       ],
       js: [
         'public/lib/angular/angular.js',
+        'public/lib/jquery/dist/jquery.min.js',
+
+
+        'public/lib/bootstrap/dist/js/bootstrap.min.js',
         'public/lib/angular-resource/angular-resource.js',
         'public/lib/angular-animate/angular-animate.js',
         'public/lib/angular-messages/angular-messages.js',
@@ -23,6 +28,8 @@ module.exports = {
         'public/lib/lodash/lodash.js',
         'public/lib/moment/moment.js',
         'public/lib/angular-moment/angular-moment.js',
+        'public/lib/moment-timezone/builds/moment-timezone-with-data.min.js',
+        'public/lib/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
         'public/lib/angular-sanitize/angular-sanitize.js'
       ],
       tests: ['public/lib/angular-mocks/angular-mocks.js']
