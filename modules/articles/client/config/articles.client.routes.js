@@ -7,7 +7,7 @@ angular.module('articles').config(['$stateProvider','$locationProvider',
         abstract: true,
         url: '/articles',
         template: '<ui-view/>'
-        })
+      })
       .state('articles.list', {
         url: '',
         templateUrl: 'modules/articles/client/views/articles.client.view.html'
